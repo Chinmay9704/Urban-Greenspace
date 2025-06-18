@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - Greens Cart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Include Sidebar -->
+        <%- include('../partials/farmer-sidebar', { currentPage: 'dashboard' }) %>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">Welcome, <%= farmer.name %></h2>
+                <p class="text-gray-600 mt-2">Manage your farm and crops efficiently</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-lg font-semibold mb-2">Total Crops</h3>
+                    <p class="text-3xl font-bold text-yellow-600"><%= cropCount || 0 %></p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-lg font-semibold mb-2">Active Sales</h3>
+                    <p class="text-3xl font-bold text-yellow-600"><%= activeSales || 0 %></p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-lg font-semibold mb-2">Total Revenue</h3>
+                    <p class="text-3xl font-bold text-yellow-600">₹<%= totalRevenue || 0 %></p>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Recent Activity</h3>
+                <div class="space-y-4">
+                    <% if (recentActivities && recentActivities.length > 0) { %>
+                        <% recentActivities.forEach(activity => { %>
+                            <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                                <div class="flex-1">
+                                    <h4 class="font-semibold"><%= activity.title %></h4>
+                                    <p class="text-sm text-gray-600"><%= activity.description %></p>
+                                </div>
+                                <span class="text-sm text-gray-500">
+                                    <%= new Date(activity.created_at).toLocaleDateString() %>
+                                </span>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="text-gray-500 text-center py-4">No recent activity</p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

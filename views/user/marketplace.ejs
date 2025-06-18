@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace - Urban Greenspace</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/greenscart.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/greenscartpng">
+    <meta name="theme-color" content="#047857">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: #059669;
+            color: white;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 50;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .add-to-cart-btn {
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart-btn:active {
+            transform: scale(0.95);
+        }
+
+        .vegetable-card {
+            transition: all 0.3s ease;
+        }
+
+        .vegetable-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .bounce {
+            animation: bounce 0.5s;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Include Sidebar -->
+        <%- include('../partials/user-sidebar', { currentPage: 'marketplace' }) %>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Categories -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4">Categories</h2>
+                <div class="flex space-x-4">
+                    <button onclick="filterByCategory('all')" class="category-btn active px-4 py-2 rounded-lg bg-green-600 text-white">
+                        All
+                    </button>
+                    <button onclick="filterByCategory('leafy')" class="category-btn px-4 py-2 rounded-lg bg-gray-200">
+                        Leafy Vegetables
+                    </button>
+                    <button onclick="filterByCategory('root')" class="category-btn px-4 py-2 rounded-lg bg-gray-200">
+                        Root Vegetables
+                    </button>
+                    <button onclick="filterByCategory('fruit')" class="category-btn px-4 py-2 rounded-lg bg-gray-200">
+                        Fruit Vegetables
+                    </button>
+                </div>
+            </div>
+
+            <!-- Add this for notifications -->
+            <div id="notification" class="notification" role="alert">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span id="notification-message"></span>
+                </div>
+            </div>
+
+            <!-- Vegetables Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <% vegetables.forEach(vegetable => { %>
+                    <div class="vegetable-card bg-white rounded-lg shadow overflow-hidden" data-category="<%= vegetable.category %>">
+                        <img src="<%= vegetable.image_url %>" alt="<%= vegetable.name %>" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold mb-2"><%= vegetable.name %></h3>
+                            <p class="text-gray-600 mb-2"><%= vegetable.description %></p>
+                            <div class="flex justify-between items-center mb-4">
+                                <p class="text-lg font-bold text-green-600">
+                                    ₹<%= vegetable.price %>/<%= vegetable.unit %>
+                                </p>
+                                <span class="text-sm text-gray-500">Stock: <%= vegetable.stock_quantity %></span>
+                            </div>
+                            
+                            <!-- Quantity Controls in a styled box -->
+                            <div class="bg-gray-50 p-3 rounded-lg mb-3">
+                                <label class="block text-sm font-medium text-gray-600 mb-2">Quantity</label>
+                                <div class="flex items-center justify-center space-x-3">
+                                    <button 
+                                        onclick="decrementQuantity('<%- vegetable.id %>')" 
+                                        class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    >
+                                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                                        </svg>
+                                    </button>
+                                    <input 
+                                        type="number" 
+                                        id="quantity-<%- vegetable.id %>" 
+                                        value="1" 
+                                        min="1" 
+                                        max="<%- vegetable.stock_quantity %>"
+                                        class="w-20 h-10 text-center border-2 border-gray-200 rounded-lg focus:outline-none focus:border-green-500 text-lg font-medium"
+                                    >
+                                    <button 
+                                        onclick="incrementQuantity('<%- vegetable.id %>')" 
+                                        class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    >
+                                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <button 
+                                onclick="addToCart('<%- vegetable.id %>', '<%- vegetable.name %>')" 
+                                class="add-to-cart-btn w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center group"
+                            >
+                                <svg class="w-5 h-5 mr-2 transform group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterByCategory(category) {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-green-600', 'text-white');
+                btn.classList.add('bg-gray-200');
+            });
+            event.target.classList.remove('bg-gray-200');
+            event.target.classList.add('bg-green-600', 'text-white');
+
+            document.querySelectorAll('.vegetable-card').forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function incrementQuantity(id) {
+            const input = document.getElementById(`quantity-${id}`);
+            const max = parseInt(input.max);
+            const currentValue = parseInt(input.value);
+            if (currentValue < max) {
+                input.value = currentValue + 1;
+            }
+        }
+
+        function decrementQuantity(id) {
+            const input = document.getElementById(`quantity-${id}`);
+            const currentValue = parseInt(input.value);
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const messageElement = document.getElementById('notification-message');
+            messageElement.textContent = message;
+            notification.classList.add('show');
+
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        async function addToCart(vegetableId, vegetableName) {
+            const quantity = document.getElementById(`quantity-${vegetableId}`).value;
+            const button = event.currentTarget;
+            
+            try {
+                // Add bounce animation to button
+                button.classList.add('bounce');
+                setTimeout(() => button.classList.remove('bounce'), 500);
+
+                const response = await fetch('/user/cart/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ vegetableId, quantity })
+                });
+
+                if (response.ok) {
+                    // Show success message regardless of cart count update
+                    showNotification(`${vegetableName} added to cart successfully!`);
+                    
+                    // Try to update cart count if the element exists
+                    try {
+                        const data = await response.json();
+                        const cartCountElement = document.getElementById('cartCount');
+                        if (cartCountElement) {
+                            cartCountElement.textContent = data.cartCount;
+                        }
+                    } catch (e) {
+                        console.log('Cart count update not critical');
+                    }
+                } else {
+                    const data = await response.json();
+                    showNotification(data.error || 'Failed to add to cart');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Failed to add to cart');
+            }
+        }
+
+        // Optional: Update cart count on page load only if element exists
+        const cartCountElement = document.getElementById('cartCount');
+        if (cartCountElement) {
+            fetch('/user/cart/count')
+                .then(response => response.json())
+                .then(data => {
+                    cartCountElement.textContent = data.count;
+                })
+                .catch(error => console.log('Cart count fetch not critical'));
+        }
+    </script>
+
+    <!-- Add this at the end of the body -->
+    <%- include('../partials/chatbot') %>
+</body>
+</html> 

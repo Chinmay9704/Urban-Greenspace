@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - GreenScart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Include Admin Sidebar -->
+        <%- include('../partials/admin-sidebar', { currentPage: 'dashboard' }) %>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Header Section -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">Welcome, Admin!</h2>
+                <p class="text-gray-600 mt-2">Here's your overview for today</p>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Orders Stats -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Orders</h3>
+                        <span class="text-green-600 bg-green-100 p-2 rounded-full">
+                            <i class="fas fa-shopping-cart"></i>
+                        </span>
+                    </div>
+                    <p class="text-3xl font-bold text-gray-900"><%= stats?.total_orders || 0 %></p>
+                    <p class="text-sm text-gray-500">Active orders: <%= stats?.active_orders || 0 %></p>
+                </div>
+
+                <!-- Users Stats -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Users</h3>
+                        <span class="text-blue-600 bg-blue-100 p-2 rounded-full">
+                            <i class="fas fa-users"></i>
+                        </span>
+                    </div>
+                    <p class="text-3xl font-bold text-gray-900"><%= stats?.total_users || 0 %></p>
+                    <p class="text-sm text-gray-500">New today: <%= stats?.new_users_today || 0 %></p>
+                </div>
+
+                <!-- Revenue Stats -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow relative group">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Revenue</h3>
+                        <span class="text-purple-600 bg-purple-100 p-2 rounded-full">
+                            <i class="fas fa-rupee-sign"></i>
+                        </span>
+                    </div>
+                    <p class="text-3xl font-bold text-gray-900">₹<%= stats?.revenue?.total?.toFixed(2) || '0.00' %></p>
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-500 flex justify-between">
+                            <span>Today:</span>
+                            <span class="font-medium">₹<%= stats?.revenue?.today?.toFixed(2) || '0.00' %></span>
+                        </p>
+                        <p class="text-sm text-gray-500 flex justify-between">
+                            <span>This Week:</span>
+                            <span class="font-medium">₹<%= stats?.revenue?.this_week?.toFixed(2) || '0.00' %></span>
+                        </p>
+                    </div>
+                    
+                    <!-- Detailed Revenue Panel -->
+                    <div class="absolute left-0 right-0 top-full mt-2 bg-white rounded-lg shadow-lg p-4 hidden group-hover:block z-10">
+                        <div class="space-y-3">
+                            <h4 class="font-semibold text-gray-800">Revenue Breakdown</h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-500">This Month</p>
+                                    <p class="font-medium">₹<%= stats?.revenue?.this_month?.toFixed(2) || '0.00' %></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Avg. Order Value</p>
+                                    <p class="font-medium">₹<%= stats?.revenue?.average_order?.toFixed(2) || '0.00' %></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Completed Orders</p>
+                                    <p class="font-medium"><%= stats?.revenue?.completed_orders || 0 %></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Success Rate</p>
+                                    <p class="font-medium">
+                                        <%= stats?.total_orders && stats?.revenue?.completed_orders ? 
+                                            Math.round((stats.revenue.completed_orders / stats.total_orders) * 100) : 
+                                            0 %>%
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory Stats -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Inventory</h3>
+                        <span class="text-orange-600 bg-orange-100 p-2 rounded-full">
+                            <i class="fas fa-box"></i>
+                        </span>
+                    </div>
+                    <p class="text-3xl font-bold text-gray-900"><%= stats?.total_products || 0 %></p>
+                    <p class="text-sm text-gray-500">Low stock: <%= stats?.low_stock_items || 0 %></p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Management Links -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <a href="/admin/orders" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                            <i class="fas fa-clipboard-list text-blue-600 mr-3"></i>
+                            <span>Manage Orders</span>
+                        </a>
+                        <a href="/admin/vegetables" class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                            <i class="fas fa-carrot text-green-600 mr-3"></i>
+                            <span>Manage Vegetables</span>
+                        </a>
+                        <a href="/admin/users" class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                            <i class="fas fa-user-cog text-purple-600 mr-3"></i>
+                            <span>Manage Users</span>
+                        </a>
+                        <a href="/admin/farmer-info" class="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                            <i class="fas fa-tractor text-yellow-600 mr-3"></i>
+                            <span>Farmer Info</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Weather & Delivery -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Delivery & Weather</h3>
+                    <div class="space-y-4">
+                        <a href="/admin/weather" class="flex items-center justify-between p-4 bg-sky-50 rounded-lg hover:bg-sky-100 transition-colors">
+                            <div class="flex items-center">
+                                <i class="fas fa-cloud-sun text-sky-600 mr-3"></i>
+                                <span>Check Weather</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-sky-600"></i>
+                        </a>
+                        <div class="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
+                            <div>
+                                <h4 class="font-medium">Active Deliveries</h4>
+                                <p class="text-sm text-gray-500">
+                                    <%= stats?.active_deliveries || 0 %> deliveries in progress
+                                </p>
+                            </div>
+                            <i class="fas fa-truck text-orange-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
+                <div class="space-y-4">
+                    <% if (stats?.recent_activities?.length > 0) { %>
+                        <% stats.recent_activities.forEach(activity => { %>
+                            <div class="flex items-center justify-between p-4 border-b">
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                                    <div>
+                                        <p class="font-medium"><%= activity.description %></p>
+                                        <p class="text-sm text-gray-500">
+                                            <%= new Date(activity.timestamp).toLocaleString() %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="text-sm text-gray-500">
+                                    <%= activity.type %>
+                                </span>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="text-gray-500 text-center py-4">No recent activity</p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add any dashboard-specific JavaScript here
+        document.addEventListener('DOMContentLoaded', () => {
+            // You can add real-time updates or notifications here
+        });
+    </script>
+</body>
+</html> 

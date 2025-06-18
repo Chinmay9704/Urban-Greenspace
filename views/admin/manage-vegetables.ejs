@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Vegetables - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <%- include('../partials/admin-sidebar', { currentPage: 'vegetables' }) %>
+
+        <div class="flex-1 p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">Manage Vegetables</h2>
+                <button onclick="openAddModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    Add New Vegetable
+                </button>
+            </div>
+
+            <!-- Vegetables Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <% vegetables.forEach(vegetable => { %>
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <img src="<%= vegetable.image_url %>" alt="<%= vegetable.name %>" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold mb-2"><%= vegetable.name %></h3>
+                            <p class="text-gray-600 mb-2"><%= vegetable.description %></p>
+                            <p class="text-lg font-bold text-green-600">
+                                ₹<%= vegetable.price %>/<%= vegetable.unit %>
+                            </p>
+                            <p class="text-sm text-gray-500">Stock: <%= vegetable.stock_quantity %></p>
+                            <div class="mt-4 flex justify-end space-x-2">
+                                <button onclick="editVegetable('<%= JSON.stringify(vegetable) %>')" 
+                                        class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                                    Edit
+                                </button>
+                                <button onclick="deleteVegetable('<%= vegetable.id %>')" 
+                                        class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="vegetableModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full">
+            <h3 id="modalTitle" class="text-2xl font-bold mb-4">Add New Vegetable</h3>
+            <form id="vegetableForm" onsubmit="handleSubmit(event)">
+                <input type="hidden" id="vegetableId">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Name</label>
+                        <input type="text" id="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea id="description" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Price</label>
+                        <input type="number" id="price" step="0.01" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Unit</label>
+                        <select id="unit" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <option value="kg">Kilogram (kg)</option>
+                            <option value="g">Gram (g)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Stock Quantity</label>
+                        <input type="number" id="stockQuantity" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Image URL</label>
+                        <input type="url" id="imageUrl" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Category</label>
+                        <select id="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <option value="leafy">Leafy Vegetables</option>
+                            <option value="root">Root Vegetables</option>
+                            <option value="fruit">Fruit Vegetables</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 border rounded-md hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal handling functions
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Vegetable';
+            document.getElementById('vegetableForm').reset();
+            document.getElementById('vegetableId').value = '';
+            document.getElementById('vegetableModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('vegetableModal').classList.add('hidden');
+        }
+
+        function editVegetable(vegetableJson) {
+            const vegetable = JSON.parse(vegetableJson);
+            document.getElementById('modalTitle').textContent = 'Edit Vegetable';
+            document.getElementById('vegetableId').value = vegetable.id;
+            document.getElementById('name').value = vegetable.name;
+            document.getElementById('description').value = vegetable.description;
+            document.getElementById('price').value = vegetable.price;
+            document.getElementById('unit').value = vegetable.unit;
+            document.getElementById('stockQuantity').value = vegetable.stock_quantity;
+            document.getElementById('imageUrl').value = vegetable.image_url;
+            document.getElementById('category').value = vegetable.category;
+            document.getElementById('vegetableModal').classList.remove('hidden');
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const formData = {
+                id: document.getElementById('vegetableId').value,
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                price: parseFloat(document.getElementById('price').value),
+                unit: document.getElementById('unit').value,
+                stock_quantity: parseInt(document.getElementById('stockQuantity').value),
+                image_url: document.getElementById('imageUrl').value,
+                category: document.getElementById('category').value
+            };
+
+            try {
+                const response = await fetch('/admin/vegetables', {
+                    method: formData.id ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to save vegetable');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to save vegetable');
+            }
+        }
+
+        async function deleteVegetable(id) {
+            if (confirm('Are you sure you want to delete this vegetable?')) {
+                try {
+                    const response = await fetch(`/admin/vegetables/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Failed to delete vegetable');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to delete vegetable');
+                }
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Greens Cart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-96 transform transition-all duration-300 hover:scale-105">
+        <!-- Logo and Title -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-800">Create Account</h2>
+            <p class="text-gray-500 mt-2">Register for a Greens Cart account</p>
+        </div>
+
+        <!-- Error Message -->
+        <% if (locals.error) { %>
+        <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <form action="/auth/register" method="post" class="space-y-6">
+            <!-- Name Input -->
+            <div class="space-y-2">
+                <label for="name" class="block text-sm font-medium text-gray-700">
+                    Full Name
+                </label>
+                <div class="relative">
+                    <input type="text" id="name" name="name" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                        placeholder="Enter your full name">
+                </div>
+            </div>
+
+            <!-- Email Input -->
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-gray-700">
+                    Email
+                </label>
+                <div class="relative">
+                    <input type="email" id="email" name="email" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                        placeholder="Enter your email">
+                </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-gray-700">
+                    Password
+                </label>
+                <div class="relative">
+                    <input type="password" id="password" name="password" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                        placeholder="Create a password">
+                </div>
+            </div>
+
+            <!-- Register Button -->
+            <button type="submit"
+                class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transform transition-all duration-300 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                Register
+            </button>
+        </form>
+
+        <!-- Additional Links -->
+        <div class="mt-6 text-center text-sm">
+            <span class="text-gray-500">Already have an account?</span>
+            <a href="/" class="text-green-600 hover:text-green-700 transition-colors duration-300 ml-1">Login</a>
+        </div>
+    </div>
+</body>
+</html> 

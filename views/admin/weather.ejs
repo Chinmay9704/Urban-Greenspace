@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard - Urban Greenspace Admin</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/greenscart.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/greenscartpng">
+    <meta name="theme-color" content="#047857">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .weather-card {
+            transition: all 0.3s ease;
+        }
+        .weather-card:hover {
+            transform: translateY(-2px);
+        }
+        .location-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .suggestion-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .suggestion-item:hover {
+            background-color: #f3f4f6;
+        }
+        .suggestion-item.selected {
+            background-color: #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Include Admin Sidebar -->
+        <%- include('../partials/admin-sidebar', { currentPage: 'weather' }) %>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">Weather Dashboard</h2>
+                    <p class="text-gray-600 mt-2">Monitor weather conditions for delivery planning</p>
+                </div>
+
+                <!-- Search Section -->
+                <div class="mb-8">
+                    <div class="relative">
+                        <div class="flex gap-4">
+                            <div class="flex-1 relative">
+                                <input type="text" 
+                                       id="locationSearch" 
+                                       placeholder="Search for a location..." 
+                                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                       autocomplete="off">
+                                <div id="locationSuggestions" class="location-suggestions hidden"></div>
+                            </div>
+                            <button onclick="performSearch()" 
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weather Display -->
+                <% if (weather) { %>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Current Weather -->
+                        <div class="weather-card bg-white p-6 rounded-xl shadow-md">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-xl font-semibold">
+                                        <%= weather.name %>, <%= weather.sys.country %>
+                                    </h3>
+                                    <p class="text-gray-500">Current Weather</p>
+                                </div>
+                                <img src="https://openweathermap.org/img/w/<%= weather.weather[0].icon %>.png" 
+                                     alt="<%= weather.weather[0].description %>"
+                                     class="w-16 h-16">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-3xl font-bold"><%= Math.round(weather.main.temp) %>°C</p>
+                                    <p class="text-gray-500 capitalize"><%= weather.weather[0].description %></p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-gray-600">Humidity: <%= weather.main.humidity %>%</p>
+                                    <p class="text-gray-600">Wind: <%= Math.round(weather.wind.speed * 3.6) %> km/h</p>
+                                    <p class="text-gray-600">Feels like: <%= Math.round(weather.main.feels_like) %>°C</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div class="grid grid-cols-3 gap-2 text-center">
+                                    <div>
+                                        <p class="text-gray-500">Min</p>
+                                        <p class="font-semibold"><%= Math.round(weather.main.temp_min) %>°C</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">Max</p>
+                                        <p class="font-semibold"><%= Math.round(weather.main.temp_max) %>°C</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">Pressure</p>
+                                        <p class="font-semibold"><%= weather.main.pressure %> hPa</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Forecast -->
+                        <div class="weather-card bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="text-xl font-semibold mb-4">5-Day Forecast</h3>
+                            <div class="space-y-4">
+                                <% let processedDates = new Set(); %>
+                                <% forecast.list.forEach(item => { %>
+                                    <% 
+                                    const date = new Date(item.dt * 1000).toLocaleDateString('en-US', {
+                                        weekday: 'short',
+                                        month: 'short',
+                                        day: 'numeric'
+                                    }); 
+                                    %>
+                                    <% if (!processedDates.has(date)) { %>
+                                        <% processedDates.add(date); %>
+                                        <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition-colors duration-200">
+                                            <div class="flex items-center">
+                                                <img src="https://openweathermap.org/img/w/<%= item.weather[0].icon %>.png" 
+                                                     alt="<%= item.weather[0].description %>"
+                                                     class="w-10 h-10 mr-2">
+                                                <div>
+                                                    <p class="font-medium"><%= date %></p>
+                                                    <p class="text-sm text-gray-500 capitalize">
+                                                        <%= item.weather[0].description %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-lg font-semibold">
+                                                    <%= Math.round(item.main.temp) %>°C
+                                                </p>
+                                                <p class="text-sm text-gray-500">
+                                                    <%= Math.round(item.main.humidity) %>% humidity
+                                                </p>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                <% }); %>
+                            </div>
+                        </div>
+                    </div>
+                <% } else if (error) { %>
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                        <%= error %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= process.env.GOOGLE_MAPS_API_KEY %>&libraries=places"></script>
+    <script>
+        let autocomplete;
+        
+        function initAutocomplete() {
+            try {
+                const input = document.getElementById('locationSearch');
+                const options = {
+                    types: ['(cities)'],
+                    fields: ['formatted_address'],
+                    strictBounds: false,
+                    componentRestrictions: { country: 'IN' }
+                };
+                
+                autocomplete = new google.maps.places.Autocomplete(input, options);
+                
+                // Handle place selection
+                autocomplete.addListener('place_changed', () => {
+                    const place = autocomplete.getPlace();
+                    if (place.formatted_address) {
+                        searchWeather(place.formatted_address);
+                    }
+                });
+            } catch (error) {
+                console.error('Places API initialization error:', error);
+                // Fallback to basic input functionality
+                const input = document.getElementById('locationSearch');
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        performSearch();
+                    }
+                });
+            }
+        }
+
+        function performSearch() {
+            const query = document.getElementById('locationSearch').value.trim();
+            if (query) {
+                searchWeather(query);
+            }
+        }
+
+        async function searchWeather(location) {
+            try {
+                window.location.href = `/admin/weather?location=${encodeURIComponent(location)}`;
+            } catch (error) {
+                console.error('Search error:', error);
+                alert('Error searching for location. Please try again.');
+            }
+        }
+
+        // Initialize when document loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initAutocomplete();
+            
+            // Add keyboard event listener for search
+            document.getElementById('locationSearch').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    performSearch();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

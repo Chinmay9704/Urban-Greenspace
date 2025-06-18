@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenScart - Fresh Vegetables Direct from Farmers</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/greenscart.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/greenscart.png">
+    <meta name="theme-color" content="#047857">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Righteous&family=Russo+One&display=swap" rel="stylesheet">
+    <style>
+        .swiper {
+            width: 100%;
+            height: 100vh;
+        }
+        .swiper-slide {
+            background-position: center;
+            background-size: cover;
+        }
+        .slide-content {
+            background: rgba(0, 0, 0, 0.4);
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-section {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/public/images/vegetables-hero.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #059669;
+            box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.1);
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background-color: #059669;
+            transition: all 0.3s ease;
+            z-index: -1;
+        }
+        .nav-button:hover::after {
+            height: 100%;
+        }
+        .social-link {
+            transition: all 0.3s ease;
+        }
+        .social-link:hover {
+            color: #34D399;
+            transform: translateY(-2px);
+        }
+        .brand-title {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .brand-title .urban {
+            font-family: 'Russo One', sans-serif;
+            background: linear-gradient(135deg, #047857, #059669);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            padding: 0 4px;
+            animation: urbanPulse 3s ease-in-out infinite;
+        }
+        .brand-title .urban::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #059669, transparent);
+            animation: urbanLine 3s ease-in-out infinite;
+        }
+        .brand-title .greenspace {
+            font-family: 'Righteous', cursive;
+            background: linear-gradient(90deg, #047857, #059669, #10B981, #34D399);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: gradientFlow 3s linear infinite;
+            background-size: 200% auto;
+            letter-spacing: 0.5px;
+        }
+        @keyframes urbanPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+        }
+        @keyframes urbanLine {
+            0%, 100% {
+                transform: scaleX(0.3);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+        }
+        @keyframes gradientFlow {
+            0% {
+                background-position: 0% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <img src="https://i.ibb.co/VchfCNK6/greenscart.png" 
+                         alt="GreenScart Logo" 
+                         class="h-12 w-auto object-contain rounded-full transition-transform duration-300 hover:scale-110"
+                    >
+                    <div class="brand-title text-2xl">
+                        <span class="urban">URBAN</span>
+                        <span class="greenspace">Greenspace</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/login" 
+                       class="nav-button px-6 py-2 text-green-600 border-2 border-green-600 rounded-full hover:text-white font-medium transition-colors duration-300">
+                        Login
+                    </a>
+                    <a href="/register" 
+                       class="px-6 py-2 text-white bg-gradient-to-r from-green-600 to-emerald-500 rounded-full hover:shadow-lg hover:from-green-700 hover:to-emerald-600 transition-all duration-300">
+                        Sign Up
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Carousel -->
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            <!-- Slide 1 -->
+            <div class="swiper-slide" style="background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80')">
+                <div class="slide-content">
+                    <div class="text-center text-white">
+                        <h1 class="text-6xl font-bold mb-6 animate-fade-in">Fresh Vegetables Direct from Farmers</h1>
+                        <p class="text-2xl mb-8 opacity-90">Supporting local farmers while delivering fresh produce to your doorstep</p>
+                        <a href="/login" class="inline-flex items-center px-8 py-4 text-lg font-medium rounded-full bg-gradient-to-r from-green-600 to-emerald-500 text-white hover:from-green-700 hover:to-emerald-600 transition-all duration-300 hover:shadow-xl">
+                            Get Started
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="swiper-slide" style="background-image: url('https://images.unsplash.com/photo-1488459716781-31db52582fe9?q=80')">
+                <div class="slide-content">
+                    <div class="text-center text-white">
+                        <h1 class="text-5xl font-bold mb-4">Farm Fresh Quality</h1>
+                        <p class="text-xl mb-8">Handpicked vegetables from local farms to your table</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="swiper-slide" style="background-image: url('https://images.unsplash.com/photo-1595855759920-86582396756c?q=80')">
+                <div class="slide-content">
+                    <div class="text-center text-white">
+                        <h1 class="text-5xl font-bold mb-4">Support Local Farmers</h1>
+                        <p class="text-xl mb-8">Empowering farmers through direct market access</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="swiper-slide" style="background-image: url('https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80')">
+                <div class="slide-content">
+                    <div class="text-center text-white">
+                        <h1 class="text-5xl font-bold mb-4">Sustainable Farming</h1>
+                        <p class="text-xl mb-8">Promoting eco-friendly agricultural practices</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="py-20 bg-gradient-to-b from-white to-green-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Why Choose GreenScart?</h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-green-600 to-emerald-500 mx-auto"></div>
+            </div>
+
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card bg-white rounded-xl p-8 text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-r from-green-600 to-emerald-500 text-white mx-auto mb-6 transform transition-transform duration-300 hover:scale-110">
+                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Fresh from Farms</h3>
+                    <p class="text-gray-600">Vegetables sourced directly from local farmers ensuring freshness and quality</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card bg-white rounded-xl p-8 text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-r from-green-600 to-emerald-500 text-white mx-auto mb-6 transform transition-transform duration-300 hover:scale-110">
+                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Quick Delivery</h3>
+                    <p class="text-gray-600">Same day delivery to ensure you get the freshest vegetables</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card bg-white rounded-xl p-8 text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-r from-green-600 to-emerald-500 text-white mx-auto mb-6 transform transition-transform duration-300 hover:scale-110">
+                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Support Farmers</h3>
+                    <p class="text-gray-600">Direct farmer-to-consumer model ensuring better returns for farmers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6">About GreenScart</h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-green-600 to-emerald-500 mx-auto mb-8"></div>
+                <p class="mt-4 max-w-2xl text-xl text-gray-600 lg:mx-auto leading-relaxed">
+                    GreenScart is a platform connecting local farmers directly with consumers. 
+                    We aim to provide fresh vegetables while ensuring fair prices for both farmers and consumers.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div>
+                    <h3 class="text-xl font-semibold mb-6 text-green-400">Contact Us</h3>
+                    <div class="space-y-4">
+                        <p class="flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            support@greenscart.com
+                        </p>
+                        <p class="flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                            </svg>
+                            +91 123 456 7890
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-6 text-green-400">Quick Links</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#" class="hover:text-green-400 transition-colors duration-300 flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                                About Us
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-green-400 transition-colors duration-300 flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                                How It Works
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-green-400 transition-colors duration-300 flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                                FAQs
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-6 text-green-400">Follow Us</h3>
+                    <div class="flex space-x-6">
+                        <a href="#" class="social-link hover:text-green-400 flex items-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18.77,7.46H14.5v-1.9c0-.9.6-1.1,1-1.1h3V.5h-4.33C10.24.5,9.5,3.44,9.5,5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4Z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link hover:text-green-400 flex items-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.723-.951.555-2.005.959-3.127 1.184-.896-.959-2.173-1.559-3.591-1.559-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.722-.666 1.561-.666 2.475 0 1.71.87 3.213 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link hover:text-green-400 flex items-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-gray-800 text-center">
+                <p class="text-gray-400">&copy; 2024 GreenScart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        const swiper = new Swiper(".mySwiper", {
+            spaceBetween: 30,
+            effect: "fade",
+            centeredSlides: true,
+            autoplay: {
+                delay: 3500,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
+    </script>
+</body>
+</html> 
